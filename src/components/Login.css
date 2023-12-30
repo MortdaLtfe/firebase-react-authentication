@@ -1,0 +1,37 @@
+:root {
+  --priamry-color: #367aff;
+}
+
+.login-label {
+  color: #969696;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0 10px;
+  transition: 0.5s;
+  background-color: #fff;
+  padding: 0 5px;
+}
+.input-box .login-input {
+  outline: 0;
+  text-indent: 10px;
+  font-family: inter, Sans-Serif;
+}
+
+.input-box input:focus,
+.input-box input:valid {
+  border: 1.5px solid var(--priamry-color) /*#bb0000 */;
+}
+.input-box input:focus ~ label,
+.input-box input:valid ~ label {
+  top: 1px;
+
+  font-size: 13px;
+  color: var(--priamry-color);
+}
+.pass-icon {
+  top: 50%;
+  transform: translateY(-50%);
+  right: 0;
+  margin: 0 10px;
+}
