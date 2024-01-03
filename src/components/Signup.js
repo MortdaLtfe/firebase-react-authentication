@@ -1,10 +1,10 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "./Login.css";
 
 import { useAuth } from "../context/AuthContext.js";
 const Signup = () => {
-  const { currentUser, setCurrentUser, signUp } = useAuth();
+  const { signUp } = useAuth();
   const emailRef = useRef();
   const passRef = useRef();
   const passConfRef = useRef();
@@ -12,9 +12,6 @@ const Signup = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    currentUser && navigate("/profile");
-  }, []);
   const handelSubmit = async e => {
     e.preventDefault();
     setError("");
@@ -30,12 +27,13 @@ const Signup = () => {
       await signUp(emailRef.current.value, passRef.current.value);
       navigate("/profile");
     } catch (err) {
-      if(err.message === "Firebase: Error (auth/email-already-in-use)." ){
-        setError("Email Already used");} else if(
-      err.message === "Firebase: Error (auth/invalid-email)." ){
-        setError("Invalid Email");}
-        else{setError("Cannot Sign Up")}
-      
+      if (err.message === "Firebase: Error (auth/email-already-in-use).") {
+        setError("Email Already used");
+      } else if (err.message === "Firebase: Error (auth/invalid-email).") {
+        setError("Invalid Email");
+      } else {
+        setError("Cannot Sign Up");
+      }
     }
     setLoading(false);
   };

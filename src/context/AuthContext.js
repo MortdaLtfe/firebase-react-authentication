@@ -5,13 +5,16 @@ import {
   onAuthStateChanged,
   signOut,
   signInWithEmailAndPassword,
-  sendPasswordResetEmail
+  sendPasswordResetEmail,
+  updateEmail,
+  updatePassword
 } from "firebase/auth";
 
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState("");
+  const [loading, setLoading] = useState(true);
   const signUp = (email, password) => {
     return createUserWithEmailAndPassword(auth, email, password);
   };
@@ -22,13 +25,18 @@ const AuthProvider = ({ children }) => {
     return signInWithEmailAndPassword(auth, email, password);
   };
   const restPassword = email => {
-    
-      return sendPasswordResetEmail(auth, email);
-    
+    return sendPasswordResetEmail(auth, email);
+  };
+  const updateUserEmail = email => {
+    return updateEmail(auth.currentUser, email);
+  };
+  const updateUserPassword = password => {
+    return updatePassword(auth.currentUser, password);
   };
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
       setCurrentUser(user);
+      setLoading(false);
     });
     return () => {
       unsubscribe();
@@ -43,10 +51,12 @@ const AuthProvider = ({ children }) => {
         signUp,
         logout,
         login,
-        restPassword
+        restPassword,
+        updateUserEmail,
+        updateUserPassword
       }}
     >
-      {children}
+      {!loading && children}
     </AuthContext.Provider>
   );
 };

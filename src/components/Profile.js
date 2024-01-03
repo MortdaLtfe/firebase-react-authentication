@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "../context/AuthContext.js";
 import { useNavigate, NavLink } from "react-router-dom";
 const Profile = () => {
-  const { currentUser, logout } = useAuth();
+  const { logout, currentUser } = useAuth();
   const [error, setError] = useState();
+  const Navigate = useNavigate();
   const handelLogout = async () => {
     try {
       logout();
@@ -12,11 +13,8 @@ const Profile = () => {
       setError("Cannot Logout");
     }
   };
-  const Navigate = useNavigate();
-  useEffect(() => {
-    !currentUser && Navigate("/login");
-  }, []);
-
+  
+  
   return (
     <div className="bg-white flex flex-col w-[300px] px-[10px] md:w-[400px] py-[10px] justify-center items-center  box space-y-[5px]">
       {error && (

@@ -1,29 +1,30 @@
-import { useState, useRef, useEffect } from "react";
-
-import { NavLink, useNavigate } from "react-router-dom";
+import { useState, useRef } from "react";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.js";
 import "./Login.css";
+
 const Login = () => {
   const [passType, setPassType] = useState("password");
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
-  const { login, currentUser } = useAuth();
+  const { login } = useAuth();
   const emailRef = useRef();
   const passRef = useRef();
   const Navigate = useNavigate();
+  const location = useLocation();
+
+  const redirect = location.state?.path || "/";
   const handelIconClick = () => {
     passType === "text" ? setPassType("password") : setPassType("text");
   };
-  useEffect(() => {
-    currentUser && Navigate("/profile");
-  }, []);
+
   const handelSubmit = async e => {
     e.preventDefault();
     try {
       setLoading(true);
       await login(emailRef.current.value, passRef.current.value);
 
-      Navigate("/");
+      Navigate(redirect, { replace: true });
     } catch (err) {
       setLoading(false);
       setError(() => {
@@ -37,6 +38,7 @@ const Login = () => {
       });
     }
   };
+
   return (
     <form
       onSubmit={handelSubmit}

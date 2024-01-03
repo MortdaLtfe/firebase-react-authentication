@@ -1,21 +1,39 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.js";
 const UpdateProfile = () => {
-  const { currentUser } = useAuth();
+  const { updateUserEmail, updateUserPassword } = useAuth();
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
   const emailRef = useRef();
-  const oldPassRef = useRef();
-  const newPassRef = useRef();
+  const confPassRef = useRef();
+  const passRef = useRef();
   const navigate = useNavigate();
-  const handelSubmit = (e, email, prevPass, newPass) => {
+  const handelSubmit = e => {
     e.preventDefault();
-  };
+    setError("");
+    const promises = [];
+    if (passRef.current.value !== confPassRef.current.value) {
+      return setError("Passwords aren't match");
+    }
+    if (emailRef.current.value) {
+      promises.push(updateUserEmail(emailRef.current.value));
+    }
 
-  useEffect(() => {
-    !currentUser && navigate("/login");
-  }, []);
+    if (passRef.current.value) {
+      promises.push(updateUserPassword(passRef.current.value));
+    }
+    setLoading(true);
+    Promise.all(promises)
+      .then(() => {
+        navigate("/", { replace: true });
+      })
+      .catch(() => {
+        setError("Cannot Update Account");
+      });
+
+    setLoading(false);
+  };
   return (
     <form
       className="w-[330px] md:w-[400px] bg-white flex flex-col py-[15px] justify-center space-y-4 px-[20px] md:py-[10px] box"
@@ -39,7 +57,6 @@ const UpdateProfile = () => {
         <input
           type="text"
           className=" w-[100%] h-[100%] py-[13px] border-[2px] border-[#669999] rounded-[5px] login-input"
-          required
           id="input-email"
           ref={emailRef}
         />
@@ -54,30 +71,28 @@ const UpdateProfile = () => {
         <input
           type="password"
           className=" w-[100%] h-[100%] py-[13px] border-[2px] border-[#669999] rounded-[5px] login-input"
-          required
           id="input-pass"
-          ref={oldPassRef}
+          ref={confPassRef}
         />
         <label
           for="input-pass"
           className="absolute z-0 text-[16px] font-[med] login-label"
         >
-          Old Password
+          Password
         </label>
       </div>
       <div className="w-[100%]  relative input-box ">
         <input
           type="password"
           className=" w-[100%] h-[100%] py-[13px] border-[2px] border-[#669999] rounded-[5px] login-input"
-          required
           id="input-pass-conf"
-          ref={newPassRef}
+          ref={passRef}
         />
         <label
           for="input-pass-conf"
           className="absolute z-0 text-[16px] font-[med] login-label"
         >
-          New Password
+          Password Conf
         </label>
       </div>
 
